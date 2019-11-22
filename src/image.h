@@ -1,0 +1,17 @@
+#ifndef MNIST_IMAGE_H
+#define MNIST_IMAGE_H
+
+#include <vector>
+
+using namespace std;
+
+class Image {
+public:
+    Image();
+    ~Image();
+
+    int label; // 0-9
+    vector<int> pixels; // 0-255, length 784 (28x28)
+};
+
+#endif //MNIST_IMAGE_H
