@@ -6,9 +6,6 @@
 
 using namespace std;
 
-const string TRAIN_FILE = "data/mnist_train.csv";
-const string TEST_FILE = "data/mnist_test.csv";
-
 /**
  * Images are formatted:
  * label,...pixels
@@ -16,29 +13,32 @@ const string TEST_FILE = "data/mnist_test.csv";
 istream& operator>>(istream& str, Image& data) {
     string line;
     getline(str, line);
+    if (line.empty()) {
+        return str;
+    }
 
-    stringstream lineStream(line);
+    stringstream ss(line);
     string cell;
 
     // Label
-    getline(lineStream, cell, ',');
+    getline(ss, cell, ',');
     data.label = stoi(cell);
 
     // Pixels
     vector<int> pixels;
-    while (getline(lineStream, cell, ',')) {
+    while (getline(ss, cell, ',')) {
         data.pixels.push_back(stoi(cell));
     }
     return str;
 }
 
-vector<Image&> files::load(const string &filename) {
+vector<reference_wrapper<Image>> files::load(const string &filename) {
     ifstream file(filename);
 
-    vector<Image&> images;
+    vector<reference_wrapper<Image>> images;
     Image img;
     while (file >> img) {
-        images.push_back(img);
+        images.emplace_back(img);
     }
     return images;
 }

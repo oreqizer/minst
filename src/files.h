@@ -3,12 +3,12 @@
 
 #include <vector>
 #include <string>
-#include "./image.h"
+#include "image.h"
 
 using namespace std;
 
 namespace files {
-    vector<Image&> load(const string &filename);
+    vector<reference_wrapper<Image>> load(const string &filename);
 }
 
 istream& operator>>(istream& str, Image& data);
