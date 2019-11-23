@@ -2,7 +2,8 @@
 #define MNIST_LAYER_H
 
 #include <vector>
-#include "meta.h"
+#include "image.h"
+#include "input.h"
 
 using namespace std;
 
@@ -14,15 +15,17 @@ using namespace std;
 template <int N, int L>
 class Layer {
 public:
-    Layer(): bias(0), input(vector<float>(N)), connections(vector<Meta<L>>()) {}
+    Layer(): activations(vector<float>(N)), bias(0), connections(vector<Input<L>>()) {}
     ~Layer() = default;
 
     void randomize();
+    void propagate(vector<float> inputs);
+
+    vector<float> activations;
 
 private:
     float bias;
-    vector<float> input;
-    vector<Meta<L>> connections;
+    vector<Input<L>> connections;
 };
 
 #endif //MNIST_LAYER_H

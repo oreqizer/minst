@@ -10,8 +10,8 @@ public:
 
     void randomize();
 
-private:
     float weight;
+private:
     float gradientAccumulator;
     float rmsprop;
 };

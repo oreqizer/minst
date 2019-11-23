@@ -20,11 +20,12 @@ int main() {
     cout << "  " << "Epochs: " << EPOCHS << endl;
     cout << "  " << "Batch size: " << BATCH << endl;
 
-    // Train
-    auto trains = files::load(TRAIN_FILE);
     Network network;
 
-    network.randomize();
+    // Train
+    auto trains = files::load(TRAIN_FILE);
+
+    network.train(trains);
 
     // Test
     auto tests = files::load(TEST_FILE);

@@ -1,15 +1,19 @@
 #ifndef MNIST_NETWORK_H
 #define MNIST_NETWORK_H
 
+#include <vector>
 #include "layer.h"
+#include "image.h"
 #include "enums.h"
+
+using namespace std;
 
 class Network {
 public:
     Network();
     ~Network() = default;
 
-    void randomize();
+    void train(const vector<reference_wrapper<Image>> &images);
 
 private:
     Layer<LAYER_1, 0> layer1;
