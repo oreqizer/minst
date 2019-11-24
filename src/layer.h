@@ -3,29 +3,31 @@
 
 #include <vector>
 #include "image.h"
-#include "input.h"
+#include "neuron.h"
 
 using namespace std;
 
 /**
  * One layer in a network
  * @tparam N number of this layer's neurons
- * @tparam L number of previous layer's neurons
+ * @tparam C number of previous layer's neurons
  */
-template <int N, int L>
 class Layer {
 public:
-    Layer(): activations(vector<float>(N)), bias(0), connections(vector<Input<L>>()) {}
+    explicit Layer(int size);
+
+    explicit Layer(int size, Layer &previous);
+
     ~Layer() = default;
 
     void randomize();
-    void propagate(vector<float> inputs);
 
-    vector<float> activations;
+    void propagate(Image &image);
 
-private:
-    float bias;
-    vector<Input<L>> connections;
+    void propagate();
+
+    vector<reference_wrapper<Neuron>> neurons;
+    Neuron bias;
 };
 
 #endif //MNIST_LAYER_H

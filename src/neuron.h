@@ -1,19 +1,23 @@
 #ifndef MNIST_NEURON_H
 #define MNIST_NEURON_H
 
-#define EPSILON_INIT 0.12     // Random init bounds interval -EPSILON_INIT..EPSILON_INIT
+#include <vector>
+#include "connection.h"
+
+using namespace std;
 
 class Neuron {
 public:
-    Neuron() = default;
+    Neuron();
+    explicit Neuron(const vector<reference_wrapper<Neuron>> &origin);
+
     ~Neuron() = default;
 
     void randomize();
 
-    float weight;
-private:
-    float gradientAccumulator;
-    float rmsprop;
+    float activation;
+    float z;
+    vector<Connection> connections;
 };
 
 #endif //MNIST_NEURON_H

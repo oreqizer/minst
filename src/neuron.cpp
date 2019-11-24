@@ -1,14 +1,19 @@
-#include <random>
-#include <iostream>
 #include "neuron.h"
 
-using namespace std;
+Neuron::Neuron(): activation(), z(), connections(vector<Connection>(0)) {}
+
+Neuron::Neuron(const vector<reference_wrapper<Neuron>> &origin): activation(), z() {
+    vector<Connection> conns;
+
+    conns.reserve(origin.size() + 1);
+    for (auto n : origin) {
+        conns.emplace_back(Connection(n.get()));
+    }
+    connections = conns;
+}
 
 void Neuron::randomize() {
-    random_device rd;
-    mt19937 mt(rd());
-    uniform_real_distribution<float> dist(-EPSILON_INIT, EPSILON_INIT);
-
-    weight = dist(mt);
-    cout << weight;
+    for (auto n : connections) {
+        n.randomize();
+    }
 }

@@ -3,6 +3,7 @@
 
 // Constants
 #define EPSILON 0.0000001     // Adagrad / RMSProp prevents division by zero
+#define EPSILON_INIT 0.12     // Random init bounds interval -EPSILON_INIT..EPSILON_INIT
 
 // Layers
 #define LAYER_1 28 * 28       // Image pixels

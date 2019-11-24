@@ -2,37 +2,54 @@
 #include "sigmoid.h"
 #include "enums.h"
 
-template<int N, int L>
-void Layer<N, L>::randomize() {
-    for (Input<L> conn : connections) {
+Layer::Layer(int size) : neurons(vector<reference_wrapper<Neuron>>(size)), bias() {}
+
+Layer::Layer(int size, Layer &previous) : bias() {
+    vector<reference_wrapper<Neuron>> ns;
+    vector<reference_wrapper<Neuron>> biased(previous.neurons);
+
+    biased.emplace_back(bias);
+
+    ns.reserve(size);
+    while (size--) {
+        ns.emplace_back(Neuron(biased));
+    }
+    neurons = ns;
+}
+
+void Layer::randomize() {
+    for (Neuron conn : neurons) {
         conn.randomize();
     }
 }
 
-template<int N, int L>
-void Layer<N, L>::propagate(vector<float> inputs) {
+void Layer::propagate(Image &image) {
     // Reset bias
-    bias = 1;
+    bias.activation = 1;
 
-    // 1st layer just copy inputs
-    if (connections.empty()) {
-        activations.swap(inputs);
-        return;
+    // Can't swap due to <int> to <float>
+    vector<float> inputs(image.pixels.size());
+    for (auto pixel : image.pixels) {
+        inputs.push_back(pixel);
     }
 
-    // Propagate from previous layer
     int index = 0;
-    for (Input<L> conn : connections) {
-        // Clear from previous iterations
-        conn.clear();
+    for (auto input : inputs) {
+        Neuron &neuron = neurons[index].get();
 
-        for (auto input : inputs) {
-            conn.updateZ(input);
-        }
-        activations[index++] = sigmoid::classic(conn.z);
+        neuron.activation = input;
     }
 }
 
-template class Layer<LAYER_1, 0>;
-template class Layer<LAYER_2, LAYER_1>;
-template class Layer<LAYER_3, LAYER_2>;
+void Layer::propagate() {
+    // Reset bias
+    bias.activation = 1;
+
+    for (Neuron n : neurons) {
+        n.z = 0;
+        for (auto conn : n.connections) {
+            n.z += conn.origin.activation * conn.weight;
+        }
+        n.activation = sigmoid::classic(n.z);
+    }
+}

@@ -4,9 +4,15 @@
 using namespace std;
 
 Network::Network():
-    layer1(Layer<LAYER_1, 0>()),
-    layer2(Layer<LAYER_2, LAYER_1>()),
-    layer3(Layer<LAYER_3, LAYER_2>()) {}
+    layer1(Layer(LAYER_1)),
+    layer2(Layer(LAYER_2, layer1)),
+    layer3(Layer(LAYER_3, layer2)) {}
+
+void Network::propagate(Image &image) {
+    layer1.propagate(image);
+    layer2.propagate();
+    layer3.propagate();
+}
 
 void Network::train(const vector<reference_wrapper<Image>> &images) {
     layer2.randomize();
@@ -27,10 +33,8 @@ void Network::train(const vector<reference_wrapper<Image>> &images) {
                 // Choose a random image
                 auto image = images[dist(mt)].get();
 
-                layer1.propagate(image.activations());
-                layer2.propagate(layer1.activations);
-                layer3.propagate(layer2.activations);
-                // TODO backpropagate
+                propagate(image);
+                auto error = backpropagate(image);
             }
             // TODO update weights
         }
