@@ -1,4 +1,5 @@
 #include <random>
+#include <iostream>
 #include "network.h"
 #include "enums.h"
 
@@ -34,16 +35,18 @@ void Network::train(const vector<Image> &images) {
 
     auto size = images.size();
 
-    int epochs = EPOCHS;
-    while (epochs--) {
+    int epoch = 0;
+    while (epoch++ < EPOCHS) {
         random_device rd;
         mt19937 mt(rd());
         uniform_int_distribution<> dist(0, size - 1);
 
-        auto batches = size / BATCH;
-        while (batches--) {
-            int batch = BATCH;
-            while (batch--) {
+        unsigned long batch = 0;
+        while (batch++ < size / BATCH) {
+            cout << "Epoch " << epoch << ", batch " << batch << endl;
+
+            int iteration = BATCH;
+            while (iteration--) {
                 // Choose a random image
                 Image image = images[dist(mt)];
 
