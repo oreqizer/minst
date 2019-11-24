@@ -43,7 +43,7 @@ void Network::train(const vector<Image> &images) {
 
         unsigned long batch = 0;
         while (batch++ < size / BATCH) {
-            cout << "Epoch " << epoch << ", batch " << batch << endl;
+            cout << "Epoch " << epoch << " / " << EPOCHS << ", batch " << batch << " / " << size / BATCH << endl;
 
             int iteration = BATCH;
             while (iteration--) {
