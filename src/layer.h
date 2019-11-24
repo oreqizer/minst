@@ -34,7 +34,7 @@ public:
 
     void updateWeights();
 
-    vector<reference_wrapper<Neuron>> neurons;
+    vector<Neuron> neurons;
     Neuron bias;
 };
 

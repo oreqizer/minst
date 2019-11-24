@@ -20,7 +20,7 @@ public:
 
     void updateWeights();
 
-    void train(const vector<reference_wrapper<Image>> &images);
+    void train(const vector<Image> &images);
 
 private:
     Layer layer1;

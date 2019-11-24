@@ -5,8 +5,8 @@
 
 using namespace std;
 
-#define TRAIN_FILE "data/mnist_train.csv"
-#define TEST_FILE "data/mnist_test.csv"
+#define TRAIN_FILE "data/mnist_train.csv", 60000
+#define TEST_FILE "data/mnist_test.csv", 10000
 
 int main() {
     cout << "Good morning ladies and gentlemen — buckle your seat belts, hold tight and get ready ";
@@ -23,12 +23,12 @@ int main() {
     Network network;
 
     // Train
-    auto trains = files::load(TRAIN_FILE);
+    vector<Image> trains = files::load(TRAIN_FILE);
 
     network.train(trains);
 
     // Test
-    auto tests = files::load(TEST_FILE);
+    vector<Image> tests = files::load(TEST_FILE);
 
     return 0;
 }

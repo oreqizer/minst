@@ -1,4 +1,6 @@
 #include <cmath>
+#include <random>
+#include <iostream>
 #include "layer.h"
 #include "sigmoid.h"
 #include "enums.h"
@@ -13,7 +15,7 @@ Layer::Layer(int size) : bias() {
 }
 
 Layer::Layer(int size, Layer &previous) : bias() {
-    vector<reference_wrapper<Neuron>> biased(previous.neurons);
+    vector<Neuron> biased(previous.neurons);
 
     // Bias is 1st
     biased.emplace_back(previous.bias);
@@ -27,8 +29,14 @@ Layer::Layer(int size, Layer &previous) : bias() {
 }
 
 void Layer::randomize() {
-    for (Neuron conn : neurons) {
-        conn.randomize();
+    random_device rd;
+    mt19937 mt(rd());
+    uniform_real_distribution<float> dist(-EPSILON_INIT, EPSILON_INIT);
+
+    for (Neuron &neuron : neurons) {
+        for (auto conn : neuron.connections) {
+            conn.weight = dist(mt);
+        }
     }
 }
 
@@ -43,10 +51,8 @@ void Layer::propagate(Image &image) {
     }
 
     int index = 0;
-    for (auto input : inputs) {
-        Neuron &neuron = neurons[index++].get();
-
-        neuron.activation = input;
+    for (Neuron &neuron : neurons) {
+        neuron.activation = inputs[index++];
     }
 }
 

@@ -9,11 +9,9 @@ using namespace std;
 class Neuron {
 public:
     Neuron();
-    explicit Neuron(const vector<reference_wrapper<Neuron>> &origin);
+    explicit Neuron(const vector<Neuron> &origin);
 
     ~Neuron() = default;
-
-    void randomize();
 
     float activation;
     float z;

@@ -10,35 +10,36 @@ using namespace std;
  * Images are formatted:
  * label,...pixels
  */
-istream& operator>>(istream& str, Image& data) {
-    string line;
-    getline(str, line);
-    if (line.empty()) {
-        return str;
-    }
+Image readRow(const string &line) {
+    Image img;
 
     stringstream ss(line);
     string cell;
 
     // Label
     getline(ss, cell, ',');
-    data.label = stoi(cell);
+    img.label = stoi(cell);
 
     // Pixels
     vector<int> pixels;
     while (getline(ss, cell, ',')) {
-        data.pixels.push_back(stoi(cell));
+        img.pixels.push_back(stoi(cell));
     }
-    return str;
+    return img;
 }
 
-vector<reference_wrapper<Image>> files::load(const string &filename) {
+vector<Image> files::load(const string &filename, int size) {
     ifstream file(filename);
+    vector<Image> images;
 
-    vector<reference_wrapper<Image>> images;
-    Image img;
-    while (file >> img) {
-        images.emplace_back(img);
+    images.reserve(size);
+
+    string str;
+    while (getline(file, str)) {
+        Image img = readRow(str);
+
+        images.push_back(img);
     }
+
     return images;
 }

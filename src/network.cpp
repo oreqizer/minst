@@ -1,5 +1,6 @@
 #include <random>
 #include "network.h"
+#include "enums.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ void Network::updateWeights() {
     layer2.updateWeights();
 }
 
-void Network::train(const vector<reference_wrapper<Image>> &images) {
+void Network::train(const vector<Image> &images) {
     layer2.randomize();
     layer3.randomize();
 
@@ -44,7 +45,7 @@ void Network::train(const vector<reference_wrapper<Image>> &images) {
             int batch = BATCH;
             while (batch--) {
                 // Choose a random image
-                auto image = images[dist(mt)].get();
+                Image image = images[dist(mt)];
 
                 propagate(image);
                 backpropagate(image);
