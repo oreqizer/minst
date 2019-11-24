@@ -26,6 +26,14 @@ public:
 
     void propagate();
 
+    vector<float> delta(Image &image);
+
+    vector<float> delta(const vector<float> &previous);
+
+    void updateGradient(const vector<float> &delta);
+
+    void updateWeights();
+
     vector<reference_wrapper<Neuron>> neurons;
     Neuron bias;
 };

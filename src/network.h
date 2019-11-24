@@ -16,7 +16,9 @@ public:
 
     void propagate(Image &image);
 
-    float backpropagate(Image &image);
+    void backpropagate(Image &image);
+
+    void updateWeights();
 
     void train(const vector<reference_wrapper<Image>> &images);
 

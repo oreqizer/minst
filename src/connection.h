@@ -6,14 +6,14 @@ class Neuron;
 
 class Connection {
 public:
-    explicit Connection(Neuron &target): origin(target), weight(), gradientAccumulator(), rmsprop() {}
+    explicit Connection(Neuron &target): origin(target), weight(), gradient(), rmsprop() {}
     ~Connection() = default;
 
     void randomize();
 
     Neuron &origin;
     float weight;
-    float gradientAccumulator;
+    float gradient;
     float rmsprop;
 };
 

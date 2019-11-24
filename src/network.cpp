@@ -14,6 +14,19 @@ void Network::propagate(Image &image) {
     layer3.propagate();
 }
 
+void Network::backpropagate(Image &image) {
+    auto delta3 = layer3.delta(image);
+    auto delta2 = layer2.delta(delta3);
+
+    layer3.updateGradient(delta3);
+    layer2.updateGradient(delta2);
+}
+
+void Network::updateWeights() {
+    layer3.updateWeights();
+    layer2.updateWeights();
+}
+
 void Network::train(const vector<reference_wrapper<Image>> &images) {
     layer2.randomize();
     layer3.randomize();
@@ -34,9 +47,9 @@ void Network::train(const vector<reference_wrapper<Image>> &images) {
                 auto image = images[dist(mt)].get();
 
                 propagate(image);
-                auto error = backpropagate(image);
+                backpropagate(image);
             }
-            // TODO update weights
+            updateWeights();
         }
     }
 }

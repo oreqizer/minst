@@ -5,7 +5,7 @@ Neuron::Neuron(): activation(), z(), connections(vector<Connection>(0)) {}
 Neuron::Neuron(const vector<reference_wrapper<Neuron>> &origin): activation(), z() {
     vector<Connection> conns;
 
-    conns.reserve(origin.size() + 1);
+    conns.reserve(origin.size());
     for (auto n : origin) {
         conns.emplace_back(Connection(n.get()));
     }
