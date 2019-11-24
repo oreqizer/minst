@@ -1,15 +1,12 @@
 #include "neuron.h"
 
-Neuron::Neuron(): activation(), z(), connections(vector<Connection>(0)) {}
+Neuron::Neuron(): activation(), z(), connections() {}
 
 Neuron::Neuron(const vector<reference_wrapper<Neuron>> &origin): activation(), z() {
-    vector<Connection> conns;
-
-    conns.reserve(origin.size());
+    connections.reserve(origin.size());
     for (auto n : origin) {
-        conns.emplace_back(Connection(n.get()));
+        connections.emplace_back(Connection(n.get()));
     }
-    connections = conns;
 }
 
 void Neuron::randomize() {

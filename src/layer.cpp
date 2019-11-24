@@ -3,20 +3,27 @@
 #include "sigmoid.h"
 #include "enums.h"
 
-Layer::Layer(int size) : neurons(vector<reference_wrapper<Neuron>>(size)), bias() {}
+Layer::Layer(int size) : bias() {
+    neurons.reserve(size);
+    while (size--) {
+        Neuron n;
+
+        neurons.emplace_back(n);
+    }
+}
 
 Layer::Layer(int size, Layer &previous) : bias() {
-    vector<reference_wrapper<Neuron>> ns;
     vector<reference_wrapper<Neuron>> biased(previous.neurons);
 
     // Bias is 1st
     biased.emplace_back(previous.bias);
 
-    ns.reserve(size);
+    neurons.reserve(size);
     while (size--) {
-        ns.emplace_back(Neuron(biased));
+        Neuron n(biased);
+
+        neurons.emplace_back(n);
     }
-    neurons = ns;
 }
 
 void Layer::randomize() {
