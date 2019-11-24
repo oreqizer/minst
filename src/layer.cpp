@@ -8,7 +8,7 @@ Layer::Layer(int size, Layer &previous) : bias() {
     vector<reference_wrapper<Neuron>> ns;
     vector<reference_wrapper<Neuron>> biased(previous.neurons);
 
-    biased.emplace_back(bias);
+    biased.emplace_back(previous.bias);
 
     ns.reserve(size);
     while (size--) {
