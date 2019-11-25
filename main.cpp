@@ -9,12 +9,14 @@ using namespace std;
 #define TEST_FILE "data/mnist_test.csv", 10000
 
 int main() {
-    cout << "Good morning ladies and gentlemen — buckle your seat belts, hold tight and get ready ";
-    cout << "for the ride of this ultimate MNIST dataset neural network C++ magnificence!" << endl;
+    cout << "Good morning ladies and gentlemen — buckle your seat belts,";
+    cout << "hold tight and get ready for this preworkout-fueled ride of the";
+    cout << "ultimate MNIST dataset neural network C++ magnificence!" << endl;
     cout << endl;
     cout << "Info:" << endl;
     cout << "  " << "Mini-batch RMSProp of a 2-layer NN..." << endl;
-    cout << "  " << "(" << LAYER_1 << " input neurons) x (" << LAYER_2 << " hidden neurons) x (" << LAYER_3 << " output neurons)" << endl;
+    cout << "  " << "(" << LAYER_IN << " input neurons) x (" << LAYER_HIDDEN << " hidden neurons) x (" << LAYER_OUT
+         << " output neurons)" << endl;
     cout << "  " << "Learning rate: " << RATE << endl;
     cout << "  " << "Gamma: " << RHO << endl;
     cout << "  " << "Epochs: " << EPOCHS << endl;

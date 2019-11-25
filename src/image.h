@@ -7,7 +7,8 @@ using namespace std;
 
 class Image {
 public:
-    Image(): label(0), pixels(vector<int>()) {}
+    Image() : label(0), pixels(vector<int>()) {}
+
     ~Image() = default;
 
     int label; // 0-9

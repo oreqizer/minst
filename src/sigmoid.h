@@ -3,6 +3,7 @@
 
 namespace sigmoid {
     float classic(float z);
+
     float prime(float z);
 }
 

@@ -6,7 +6,8 @@ class Neuron;
 
 class Connection {
 public:
-    explicit Connection(Neuron &target): origin(target), weight(), gradient(), rmsprop() {}
+    explicit Connection(Neuron &target) : origin(target), weight(), gradient(), rmsprop() {}
+
     ~Connection() = default;
 
     void randomize();

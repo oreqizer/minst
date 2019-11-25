@@ -9,6 +9,7 @@ using namespace std;
 class Neuron {
 public:
     Neuron();
+
     explicit Neuron(const vector<Neuron> &origin);
 
     ~Neuron() = default;

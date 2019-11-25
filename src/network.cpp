@@ -5,35 +5,35 @@
 
 using namespace std;
 
-Network::Network():
-    layer1(Layer(LAYER_1)),
-    layer2(Layer(LAYER_2, layer1)),
-    layer3(Layer(LAYER_3, layer2)) {}
+Network::Network() :
+        layerIn(Layer(LAYER_IN)),
+        layerHidden(Layer(LAYER_HIDDEN, layerIn)),
+        layerOut(Layer(LAYER_OUT, layerHidden)) {}
 
 void Network::propagate(Image &image) {
-    layer1.propagate(image);
-    layer2.propagate();
-    layer3.propagate();
+    layerIn.propagate(image);
+    layerHidden.propagate();
+    layerOut.propagate();
 }
 
 void Network::backpropagate(Image &image) {
-    auto delta3 = layer3.delta(image);
-    auto delta2 = layer2.delta(delta3);
+    auto deltaOut = layerOut.delta(image);
+    auto deltaHidden = layerHidden.delta(deltaOut);
 
-    layer3.updateGradient(delta3);
-    layer2.updateGradient(delta2);
+    layerOut.updateGradient(deltaOut);
+    layerHidden.updateGradient(deltaHidden);
 }
 
 void Network::updateWeights() {
-    layer3.updateWeights();
-    layer2.updateWeights();
+    layerOut.updateWeights();
+    layerHidden.updateWeights();
 }
 
 void Network::train(const vector<Image> &images) {
-    layer2.randomize();
-    layer3.randomize();
+    layerHidden.randomize();
+    layerOut.randomize();
 
-    auto size = images.size();
+    int size = images.size();
 
     int epoch = 0;
     while (epoch++ < EPOCHS) {
@@ -41,9 +41,10 @@ void Network::train(const vector<Image> &images) {
         mt19937 mt(rd());
         uniform_int_distribution<> dist(0, size - 1);
 
-        unsigned long batch = 0;
-        while (batch++ < size / BATCH) {
-            cout << "Epoch " << epoch << " / " << EPOCHS << ", batch " << batch << " / " << size / BATCH << endl;
+        int batches = size / BATCH;
+        int batch = 0;
+        while (batch++ < batches) {
+            cout << "Epoch " << epoch << " / " << EPOCHS << ", batch " << batch << " / " << batches << endl;
 
             int iteration = BATCH;
             while (iteration--) {

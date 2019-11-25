@@ -23,9 +23,9 @@ public:
     void train(const vector<Image> &images);
 
 private:
-    Layer layer1;
-    Layer layer2;
-    Layer layer3;
+    Layer layerIn;
+    Layer layerHidden;
+    Layer layerOut;
 };
 
 #endif //MNIST_NETWORK_H

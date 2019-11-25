@@ -6,9 +6,9 @@
 #define EPSILON_INIT 0.12     // Random init bounds interval -EPSILON_INIT..EPSILON_INIT
 
 // Layers
-#define LAYER_1 28 * 28       // Image pixels
-#define LAYER_2 LAYER_1 / 8   // Arbitrary
-#define LAYER_3 10            // 0..9
+#define LAYER_IN 28 * 28       // Image pixels
+#define LAYER_HIDDEN 64        // Arbitrary
+#define LAYER_OUT 10           // 0..9
 
 // Hyperparameters
 #define EPOCHS 15             // Iterations over dataset
