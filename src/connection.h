@@ -10,8 +10,6 @@ public:
 
     ~Connection() = default;
 
-    void randomize();
-
     Neuron &origin;
     float weight;
     float gradient;

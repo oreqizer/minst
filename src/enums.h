@@ -7,13 +7,13 @@
 
 // Layers
 #define LAYER_IN 28 * 28       // Image pixels
-#define LAYER_HIDDEN 64        // Arbitrary
+#define LAYER_HIDDEN 256       // Arbitrary
 #define LAYER_OUT 10           // 0..9
 
 // Hyperparameters
 #define EPOCHS 15             // Iterations over dataset
 #define BATCH 200             // Number of images to adjust weights after
-#define RATE 0.15             // Learning rate
+#define RATE 0.3              // Learning rate
 #define RHO 0.9               // How much does previous cache affect the next one
 
 #endif //MNIST_ENUMS_H

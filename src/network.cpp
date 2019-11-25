@@ -6,8 +6,9 @@
 using namespace std;
 
 Network::Network() :
-        layerIn(Layer(LAYER_IN)),
-        layerHidden(Layer(LAYER_HIDDEN, layerIn)),
+        // +1 for Bias
+        layerIn(Layer(LAYER_IN + 1)),
+        layerHidden(Layer(LAYER_HIDDEN + 1, layerIn)),
         layerOut(Layer(LAYER_OUT, layerHidden)) {}
 
 void Network::propagate(Image &image) {
@@ -29,12 +30,28 @@ void Network::updateWeights() {
     layerHidden.updateWeights();
 }
 
+float Network::error(Image &image) {
+    auto size = layerOut.neurons.size();
+
+    vector<float> target(size);
+
+    target[image.label] = 1;
+
+    int index = 0;
+    float acc = 0;
+    for (const auto &n : layerOut.neurons) {
+        acc += float(pow(target[index] - n.activation, 2)) / float(size);
+    }
+    return acc;
+}
+
 int Network::prediction() {
     int res = 0;
     int index = 0;
     float max = -1;
     for (const auto &n : layerOut.neurons) {
         if (n.activation > max) {
+            max = n.activation;
             res = index;
         }
         index += 1;
@@ -57,9 +74,7 @@ void Network::train(const vector<Image> &images) {
         int batches = size / BATCH;
         int batch = 0;
         while (batch++ < batches) {
-            cout << "Epoch " << epoch << " / " << EPOCHS << ", batch " << batch << " / " << batches << '\r'
-                 << flush;
-
+            float err = 0;
             int iteration = BATCH;
             while (iteration--) {
                 // Choose a random image
@@ -67,7 +82,10 @@ void Network::train(const vector<Image> &images) {
 
                 propagate(image);
                 backpropagate(image);
+
+                err += error(image);
             }
+
             updateWeights();
         }
     }
@@ -76,6 +94,7 @@ void Network::train(const vector<Image> &images) {
 void Network::test(const vector<Image> &images) {
     int size = images.size();
 
+    int index = 0;
     int correct = 0;
     for (auto image : images) {
         propagate(image);
@@ -83,12 +102,12 @@ void Network::test(const vector<Image> &images) {
         int guess = prediction();
         if (guess == image.label) {
             correct += 1;
-
-            cout << "Correct guesses: " << correct << " / " << size << '\r' << flush;
         }
+
+        cout << "Correct guesses: " << correct << " / " << ++index << '\r' << flush;
     }
     cout << "Correct guesses: " << correct << " / " << size << endl;
     cout << endl;
-    cout << "Accuracy: " << 100 * float(correct) / float(size) << endl;
+    cout << "Accuracy: " << 100 * float(correct) / float(size) << "%" << endl;
     cout << endl;
 }

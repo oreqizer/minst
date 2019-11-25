@@ -10,13 +10,14 @@ class Neuron {
 public:
     Neuron();
 
-    explicit Neuron(const vector<Neuron> &origin);
+    Neuron(vector<Neuron> &origin, Neuron &bias);
 
     ~Neuron() = default;
 
     float activation;
     float z;
     vector<Connection> connections;
+    Connection *bias; // Nullable
 };
 
 #endif //MNIST_NEURON_H

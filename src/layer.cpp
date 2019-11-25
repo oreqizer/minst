@@ -1,11 +1,10 @@
 #include <cmath>
 #include <random>
-#include <iostream>
 #include "layer.h"
 #include "sigmoid.h"
 #include "enums.h"
 
-Layer::Layer(int size) : bias() {
+Layer::Layer(int size) {
     neurons.reserve(size);
     while (size--) {
         Neuron n;
@@ -14,15 +13,10 @@ Layer::Layer(int size) : bias() {
     }
 }
 
-Layer::Layer(int size, Layer &previous) : bias() {
-    vector<Neuron> biased(previous.neurons);
-
-    // Bias is 1st
-    biased.emplace_back(previous.bias);
-
+Layer::Layer(int size, Layer &previous) {
     neurons.reserve(size);
     while (size--) {
-        Neuron n(biased);
+        Neuron n(previous.neurons, previous.bias);
 
         neurons.emplace_back(n);
     }
@@ -33,17 +27,17 @@ void Layer::randomize() {
     mt19937 mt(rd());
     uniform_real_distribution<float> dist(-EPSILON_INIT, EPSILON_INIT);
 
-    for (Neuron &neuron : neurons) {
-        for (auto conn : neuron.connections) {
+    for (Neuron &n : neurons) {
+        for (auto &conn : n.connections) {
             conn.weight = dist(mt);
+        }
+        if (n.bias != nullptr) {
+            n.bias->weight = dist(mt);
         }
     }
 }
 
 void Layer::propagate(Image &image) {
-    // Reset bias
-    bias.activation = 1;
-
     // Can't swap due to <int> to <float>
     vector<float> inputs(image.pixels.size());
     for (auto pixel : image.pixels) {
@@ -51,37 +45,40 @@ void Layer::propagate(Image &image) {
     }
 
     int index = 0;
-    for (Neuron &neuron : neurons) {
-        neuron.activation = inputs[index++];
+    for (Neuron &n : neurons) {
+        n.activation = inputs[index++];
     }
+
+    // Reset bias
+    bias.activation = 1;
 }
 
 void Layer::propagate() {
-    // Reset bias
-    bias.activation = 1;
-
-    for (Neuron n : neurons) {
+    for (Neuron &n : neurons) {
         n.z = 0;
         for (auto conn : n.connections) {
             n.z += conn.origin.activation * conn.weight;
         }
-        n.activation = sigmoid::classic(n.z);
+        if (n.bias != nullptr) {
+            n.z += n.bias->origin.activation * n.bias->weight;
+        }
     }
+
+    // Reset bias
+    bias.activation = 1;
 }
 
 vector<float> Layer::delta(Image &image) {
-    int size = image.pixels.size();
-
-    vector<float> target(size);
-    vector<float> delta(size);
+    vector<float> target(neurons.size());
+    vector<float> delta(neurons.size());
 
     target[image.label] = 1;
 
-    int n = 0;
-    for (Neuron &neuron : neurons) {
-        delta[n] = sigmoid::prime(neuron.z) * (target[n] - neuron.activation);
+    int index = 0;
+    for (Neuron &n : neurons) {
+        delta[index] = sigmoid::prime(n.z) * (target[index] - n.activation);
 
-        n += 1;
+        index += 1;
     }
     return delta;
 }
@@ -92,7 +89,7 @@ vector<float> Layer::delta(const vector<float> &previous) {
     int n = 0;
     for (Neuron &neuron : neurons) {
         int c = 0;
-        for (auto conn : neuron.connections) {
+        for (auto &conn : neuron.connections) {
             delta[n] += previous[c++] * conn.weight;
         }
         delta[n++] *= sigmoid::prime(neuron.z);
@@ -101,17 +98,27 @@ vector<float> Layer::delta(const vector<float> &previous) {
 }
 
 void Layer::updateGradient(const vector<float> &delta) {
-    for (Neuron &neuron : neurons) {
+    for (Neuron &n : neurons) {
         int c = 0;
-        for (auto conn : neuron.connections) {
-            conn.gradient += delta[c++] * neuron.activation;
+        for (auto &conn : n.connections) {
+            conn.gradient += delta[c++] * n.activation;
+        }
+        if (n.bias != nullptr) {
+            n.bias->gradient += n.activation;
         }
     }
 }
 
 void Layer::updateWeights() {
-    for (Neuron &neuron : neurons) {
-        for (auto conn : neuron.connections) {
+    for (Neuron &n : neurons) {
+        for (auto &conn : n.connections) {
+            conn.rmsprop = RHO * conn.rmsprop + (1 - RHO) * pow(conn.gradient, 2);
+            conn.weight += RATE * (conn.gradient / BATCH) / (sqrt(conn.rmsprop) + EPSILON);
+            conn.gradient = 0; // Reset accumulator of batch gradient
+        }
+        if (n.bias != nullptr) {
+            auto &conn = *n.bias;
+
             conn.rmsprop = RHO * conn.rmsprop + (1 - RHO) * pow(conn.gradient, 2);
             conn.weight += RATE * (conn.gradient / BATCH) / (sqrt(conn.rmsprop) + EPSILON);
             conn.gradient = 0; // Reset accumulator of batch gradient

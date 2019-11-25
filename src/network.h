@@ -20,6 +20,8 @@ public:
 
     void updateWeights();
 
+    float error(Image &image);
+
     int prediction();
 
     void train(const vector<Image> &images);
