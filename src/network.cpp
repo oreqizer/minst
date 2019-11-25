@@ -29,6 +29,19 @@ void Network::updateWeights() {
     layerHidden.updateWeights();
 }
 
+int Network::prediction() {
+    int res = 0;
+    int index = 0;
+    float max = -1;
+    for (const auto &n : layerOut.neurons) {
+        if (n.activation > max) {
+            res = index;
+        }
+        index += 1;
+    }
+    return res;
+}
+
 void Network::train(const vector<Image> &images) {
     layerHidden.randomize();
     layerOut.randomize();
@@ -44,7 +57,8 @@ void Network::train(const vector<Image> &images) {
         int batches = size / BATCH;
         int batch = 0;
         while (batch++ < batches) {
-            cout << "Epoch " << epoch << " / " << EPOCHS << ", batch " << batch << " / " << batches << endl;
+            cout << "Epoch " << epoch << " / " << EPOCHS << ", batch " << batch << " / " << batches << '\r'
+                 << flush;
 
             int iteration = BATCH;
             while (iteration--) {
@@ -57,4 +71,24 @@ void Network::train(const vector<Image> &images) {
             updateWeights();
         }
     }
+}
+
+void Network::test(const vector<Image> &images) {
+    int size = images.size();
+
+    int correct = 0;
+    for (auto image : images) {
+        propagate(image);
+
+        int guess = prediction();
+        if (guess == image.label) {
+            correct += 1;
+
+            cout << "Correct guesses: " << correct << " / " << size << '\r' << flush;
+        }
+    }
+    cout << "Correct guesses: " << correct << " / " << size << endl;
+    cout << endl;
+    cout << "Accuracy: " << 100 * float(correct) / float(size) << endl;
+    cout << endl;
 }

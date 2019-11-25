@@ -20,7 +20,11 @@ public:
 
     void updateWeights();
 
+    int prediction();
+
     void train(const vector<Image> &images);
+
+    void test(const vector<Image> &images);
 
 private:
     Layer layerIn;

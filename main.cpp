@@ -21,6 +21,7 @@ int main() {
     cout << "  " << "Gamma: " << RHO << endl;
     cout << "  " << "Epochs: " << EPOCHS << endl;
     cout << "  " << "Batch size: " << BATCH << endl;
+    cout << endl;
 
     Network network;
 
@@ -31,6 +32,12 @@ int main() {
 
     // Test
     vector<Image> tests = files::load(TEST_FILE);
+
+    cout << "Testing training data..." << endl;
+    network.test(trains);
+
+    cout << "Testing actual data..." << endl;
+    network.test(tests);
 
     return 0;
 }

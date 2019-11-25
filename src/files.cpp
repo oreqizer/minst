@@ -33,13 +33,22 @@ vector<Image> files::load(const string &filename, int size) {
     vector<Image> images;
 
     images.reserve(size);
+    cout << "Loading file '" << filename << "'" << endl;
 
     string str;
+    int i = 0;
     while (getline(file, str)) {
         Image img = readRow(str);
+        if (i % 250 == 0) {
+            cout << "Loaded " << i << " images" << '\r' << flush;
+        }
 
         images.push_back(img);
+        i++;
     }
+
+    cout << "File loaded!" << endl;
+    cout << endl;
 
     return images;
 }
