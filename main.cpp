@@ -9,8 +9,8 @@ using namespace std;
 #define TEST_FILE "data/mnist_test.csv", 10000
 
 int main() {
-    cout << "Good morning ladies and gentlemen — buckle your seat belts,";
-    cout << "hold tight and get ready for this preworkout-fueled ride of the";
+    cout << "Good morning ladies and gentlemen — buckle your seat belts," << endl;
+    cout << "hold tight and get ready for this preworkout-fueled ride of the" << endl;
     cout << "ultimate MNIST dataset neural network C++ magnificence!" << endl;
     cout << endl;
     cout << "Info:" << endl;
