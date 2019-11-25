@@ -6,9 +6,8 @@
 using namespace std;
 
 Network::Network() :
-        // +1 for Bias
-        layerIn(Layer(LAYER_IN + 1)),
-        layerHidden(Layer(LAYER_HIDDEN + 1, layerIn)),
+        layerIn(Layer(LAYER_IN)),
+        layerHidden(Layer(LAYER_HIDDEN, layerIn)),
         layerOut(Layer(LAYER_OUT, layerHidden)) {}
 
 void Network::propagate(Image &image) {
@@ -85,6 +84,9 @@ void Network::train(const vector<Image> &images) {
 
                 err += error(image);
             }
+            cout << "Epoch " << epoch << " / " << EPOCHS
+                 << ", batch " << batch << " / " << batches
+                 << ", loss " << err << '\r' << flush;
 
             updateWeights();
         }
