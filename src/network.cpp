@@ -7,26 +7,31 @@ using namespace std;
 
 Network::Network() :
         layerIn(Layer(LAYER_IN)),
-        layerHidden(Layer(LAYER_HIDDEN, layerIn)),
-        layerOut(Layer(LAYER_OUT, layerHidden)) {}
+        layerHidden1(Layer(LAYER_HIDDEN, layerIn)),
+        layerHidden2(Layer(LAYER_HIDDEN, layerHidden1)),
+        layerOut(Layer(LAYER_OUT, layerHidden2)) {}
 
 void Network::propagate(Image &image) {
     layerIn.propagate(image);
-    layerHidden.propagate();
+    layerHidden1.propagate();
+    layerHidden2.propagate();
     layerOut.propagate();
 }
 
 void Network::backpropagate(Image &image) {
     auto deltaOut = layerOut.delta(image);
-    auto deltaHidden = layerHidden.delta(deltaOut);
+    auto deltaHidden2 = layerHidden2.delta(deltaOut);
+    auto deltaHidden1 = layerHidden1.delta(deltaHidden2);
 
     layerOut.updateGradient(deltaOut);
-    layerHidden.updateGradient(deltaHidden);
+    layerHidden2.updateGradient(deltaHidden2);
+    layerHidden1.updateGradient(deltaHidden1);
 }
 
 void Network::updateWeights() {
     layerOut.updateWeights();
-    layerHidden.updateWeights();
+    layerHidden2.updateWeights();
+    layerHidden1.updateWeights();
 }
 
 float Network::error(Image &image) {
@@ -59,7 +64,8 @@ int Network::prediction() {
 }
 
 void Network::train(const vector<Image> &images) {
-    layerHidden.randomize();
+    layerHidden1.randomize();
+    layerHidden2.randomize();
     layerOut.randomize();
 
     int size = images.size();

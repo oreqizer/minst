@@ -15,8 +15,10 @@ int main() {
     cout << endl;
     cout << "Info:" << endl;
     cout << "  " << "Mini-batch RMSProp of a 2-layer NN..." << endl;
-    cout << "  " << "(" << LAYER_IN << " input neurons) x (" << LAYER_HIDDEN << " hidden neurons) x (" << LAYER_OUT
-         << " output neurons)" << endl;
+    cout << "  " << "(" << LAYER_IN << " input neurons) x ("
+         << LAYER_HIDDEN << " hidden neurons) x ("
+         << LAYER_HIDDEN << " hidden neurons) x ("
+         << LAYER_OUT << " output neurons)" << endl;
     cout << "  " << "Learning rate: " << RATE << endl;
     cout << "  " << "Gamma: " << RHO << endl;
     cout << "  " << "Epochs: " << EPOCHS << endl;

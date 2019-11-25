@@ -30,7 +30,8 @@ public:
 
 private:
     Layer layerIn;
-    Layer layerHidden;
+    Layer layerHidden1;
+    Layer layerHidden2;
     Layer layerOut;
 };
 
