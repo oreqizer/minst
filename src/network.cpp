@@ -1,42 +1,34 @@
 #include <random>
 #include <iostream>
 #include "network.h"
+#include "work.h"
 #include "enums.h"
 
 using namespace std;
 
 Network::Network() :
-        layerIn(Layer(LAYER_IN)),
-        layerHidden1(Layer(LAYER_HIDDEN, layerIn)),
-        layerHidden2(Layer(LAYER_HIDDEN, layerHidden1)),
-        layerOut(Layer(LAYER_OUT, layerHidden2)) {}
+        neuronsIn(vector<float>(LAYER_IN)),
+        neuronsHidden1(vector<float>(LAYER_HIDDEN)),
+        neuronsHidden2(vector<float>(LAYER_HIDDEN)),
+        neuronsOut(vector<float>(LAYER_OUT)),
+        connectionsHidden1(vector<Connection<LAYER_IN_BIAS>>(LAYER_HIDDEN)),
+        connectionsHidden2(vector<Connection<LAYER_HIDDEN_BIAS>>(LAYER_HIDDEN)),
+        connectionsOut(vector<Connection<LAYER_HIDDEN_BIAS>>(LAYER_OUT)) {}
 
 void Network::propagate(Image &image) {
-    layerIn.propagate(image);
-    layerHidden1.propagate();
-    layerHidden2.propagate();
-    layerOut.propagate();
+    // TODO
 }
 
 void Network::backpropagate(Image &image) {
-    layerOut.delta(image);
-    layerHidden2.delta(layerOut);
-    layerHidden1.delta(layerHidden2);
-
-    // TODO fix these delta functions
-    layerOut.updateGradient();
-    layerHidden2.updateGradient();
-    layerHidden1.updateGradient();
+    // TODO
 }
 
 void Network::updateWeights() {
-    layerOut.updateWeights();
-    layerHidden2.updateWeights();
-    layerHidden1.updateWeights();
+    // TODO
 }
 
 float Network::error(Image &image) {
-    auto size = layerOut.neurons.size();
+    auto size = neuronsOut.size();
 
     vector<float> target(size);
 
@@ -44,8 +36,8 @@ float Network::error(Image &image) {
 
     int index = 0;
     float acc = 0;
-    for (const auto &n : layerOut.neurons) {
-        acc += float(pow(target[index] - n.activation, 2)) / float(size);
+    for (const auto &n : neuronsOut) {
+        acc += float(pow(target[index] - n, 2)) / float(size);
     }
     return acc;
 }
@@ -54,9 +46,9 @@ int Network::prediction() {
     int res = 0;
     int index = 0;
     float max = -1;
-    for (const auto &n : layerOut.neurons) {
-        if (n.activation > max) {
-            max = n.activation;
+    for (const auto &n : neuronsOut) {
+        if (n > max) {
+            max = n;
             res = index;
         }
         index += 1;
@@ -65,9 +57,9 @@ int Network::prediction() {
 }
 
 void Network::train(const vector<Image> &images) {
-    layerHidden1.randomize();
-    layerHidden2.randomize();
-    layerOut.randomize();
+    work::randomize(connectionsHidden1);
+    work::randomize(connectionsHidden2);
+    work::randomize(connectionsOut);
 
     int size = images.size();
 
