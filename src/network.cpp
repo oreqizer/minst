@@ -98,9 +98,9 @@ void Network::train(const vector<Image> &images) {
                 iteration -= 1;
             }
 
-            if (batch % 5 == 0) {
-                cout << "Epoch " << epoch << " / " << EPOCHS
-                     << ", batch " << batch << " / " << batches
+            if ((batch + 1) % 5 == 0) {
+                cout << "Epoch " << epoch + 1 << " / " << EPOCHS
+                     << ", batch " << batch + 1 << " / " << batches
                      << ", LR " << lr
                      << ", loss " << err << '\r' << flush;
             }
