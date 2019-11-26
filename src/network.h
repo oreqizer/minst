@@ -2,8 +2,8 @@
 #define MNIST_NETWORK_H
 
 #include <vector>
-#include "layer.h"
 #include "image.h"
+#include "Connection.h"
 #include "enums.h"
 
 using namespace std;
@@ -29,10 +29,14 @@ public:
     void test(const vector<Image> &images);
 
 private:
-    Layer layerIn;
-    Layer layerHidden1;
-    Layer layerHidden2;
-    Layer layerOut;
+    vector<float> neuronsIn;
+    vector<float> neuronsHidden1;
+    vector<float> neuronsHidden2;
+    vector<float> neuronsOut;
+
+    vector<Connection<LAYER_IN_BIAS>> connectionsHidden1;
+    vector<Connection<LAYER_HIDDEN_BIAS>> connectionsHidden2;
+    vector<Connection<LAYER_HIDDEN_BIAS>> connectionsOut;
 };
 
 #endif //MNIST_NETWORK_H
