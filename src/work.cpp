@@ -65,7 +65,7 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
 
     int index = 0;
     for (auto &c: conns) {
-        c.delta = sigmoid::prime(c.z) * (target[index] - neurons[index]);
+        c.delta = sigmoid::prime(neurons[index]) * (target[index] - neurons[index]);
 
         index += 1;
     }
@@ -74,7 +74,7 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
 template void work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &neurons, Image &image);
 
 template<int P, int C>
-void work::delta(vector<Connection<P>> &prevC, vector<Connection<C>> &currC) {
+void work::delta(vector<Connection<P>> &prevC, vector<float> &neurons, vector<Connection<C>> &currC) {
     int index = 0;
     for (Connection<C> &c: currC) {
         c.delta = 0;
@@ -82,14 +82,14 @@ void work::delta(vector<Connection<P>> &prevC, vector<Connection<C>> &currC) {
         for (Connection<P> &p: prevC) {
             c.delta += p.delta * p.weights[index];
         }
-        c.delta *= sigmoid::prime(c.z);
+        c.delta *= sigmoid::prime(neurons[index]);
     }
 }
 
 template void
-work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &prevC, vector<Connection<LAYER_HIDDEN_1_BIAS>> &currC);
+work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &prevC, vector<float> &neurons, vector<Connection<LAYER_HIDDEN_1_BIAS>> &currC);
 
-template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &prevC, vector<Connection<LAYER_IN_BIAS>> &currC);
+template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &prevC, vector<float> &neurons, vector<Connection<LAYER_IN_BIAS>> &currC);
 
 template<int N>
 void work::updateGradient(vector<Connection<N>> &conns, vector<float> &neurons) {

@@ -20,7 +20,7 @@ namespace work {
     void delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &image);
 
     template<int P, int C>
-    void delta(vector<Connection<P>> &prevC, vector<Connection<C>> &currC);
+    void delta(vector<Connection<P>> &prevC, vector<float> &neurons, vector<Connection<C>> &currC);
 
     template<int N>
     void updateGradient(vector<Connection<N>> &conns, vector<float> &neurons);
