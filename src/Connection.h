@@ -8,11 +8,12 @@ using namespace std;
 template<int N>
 class Connection {
 public:
-    Connection() : z(), weights(vector<float>(N)), gradients(vector<float>(N)), rmsprops(vector<float>(N)) {};
+    Connection() : z(), delta(), weights(vector<float>(N)), gradients(vector<float>(N)), rmsprops(vector<float>(N)) {};
 
     ~Connection() = default;
 
     float z;
+    float delta;
     vector<float> weights;
     vector<float> gradients;
     vector<float> rmsprops;
