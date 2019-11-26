@@ -16,7 +16,10 @@ Network::Network() :
         connectionsOut(vector<Connection<LAYER_HIDDEN_BIAS>>(LAYER_OUT)) {}
 
 void Network::propagate(Image &image) {
-    // TODO
+    work::propagate(neuronsIn, image);
+    work::propagate(neuronsIn, connectionsHidden1, neuronsHidden1);
+    work::propagate(neuronsHidden1, connectionsHidden2, neuronsHidden2);
+    work::propagate(neuronsHidden2, connectionsOut, neuronsOut);
 }
 
 void Network::backpropagate(Image &image) {
