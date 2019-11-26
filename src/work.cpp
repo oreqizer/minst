@@ -91,7 +91,7 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
 
     int index = 0;
     for (auto &c: conns) {
-        c.delta = sigmoid::prime(neurons[index]) * (target[index] - neurons[index]);
+        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - target[index]);
 
         index += 1;
     }
