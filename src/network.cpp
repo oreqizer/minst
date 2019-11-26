@@ -8,12 +8,12 @@ using namespace std;
 
 Network::Network() :
         neuronsIn(vector<float>(LAYER_IN)),
-        neuronsHidden1(vector<float>(LAYER_HIDDEN)),
-        neuronsHidden2(vector<float>(LAYER_HIDDEN)),
+        neuronsHidden1(vector<float>(LAYER_HIDDEN_1)),
+        neuronsHidden2(vector<float>(LAYER_HIDDEN_2)),
         neuronsOut(vector<float>(LAYER_OUT)),
-        connectionsHidden1(vector<Connection<LAYER_IN_BIAS>>(LAYER_HIDDEN)),
-        connectionsHidden2(vector<Connection<LAYER_HIDDEN_BIAS>>(LAYER_HIDDEN)),
-        connectionsOut(vector<Connection<LAYER_HIDDEN_BIAS>>(LAYER_OUT)) {}
+        connectionsHidden1(vector<Connection<LAYER_IN_BIAS>>(LAYER_HIDDEN_1)),
+        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_2)),
+        connectionsOut(vector<Connection<LAYER_HIDDEN_2_BIAS>>(LAYER_OUT)) {}
 
 void Network::propagate(Image &image) {
     work::propagate(neuronsIn, image);
@@ -23,11 +23,19 @@ void Network::propagate(Image &image) {
 }
 
 void Network::backpropagate(Image &image) {
-    // TODO
+    work::delta(connectionsOut, neuronsOut, image);
+    work::delta(connectionsOut, connectionsHidden2);
+    work::delta(connectionsHidden2, connectionsHidden1);
+
+    work::updateGradient(connectionsOut, neuronsHidden2);
+    work::updateGradient(connectionsHidden2, neuronsHidden1);
+    work::updateGradient(connectionsHidden1, neuronsIn);
 }
 
-void Network::updateWeights() {
-    // TODO
+void Network::updateWeights(float lr) {
+    work::updateWeights(lr, connectionsOut);
+    work::updateWeights(lr, connectionsHidden2);
+    work::updateWeights(lr, connectionsHidden1);
 }
 
 float Network::error(Image &image) {
@@ -67,18 +75,17 @@ void Network::train(const vector<Image> &images) {
     int size = images.size();
 
     int epoch = 0;
+    float lr = RATE;
     while (epoch++ < EPOCHS) {
         random_device rd;
         mt19937 mt(rd());
         uniform_int_distribution<> dist(0, size - 1);
 
         int batches = size / BATCH;
-//        int batches = 2;
         int batch = 0;
         while (batch++ < batches) {
             float err = 0;
             int iteration = BATCH;
-//            int iteration = 5;
             while (iteration--) {
                 // Choose a random image
                 Image image = images[dist(mt)];
@@ -86,13 +93,19 @@ void Network::train(const vector<Image> &images) {
                 propagate(image);
                 backpropagate(image);
 
-                err += error(image);
+                err += error(image) / BATCH;
             }
-            cout << "Epoch " << epoch << " / " << EPOCHS
-                 << ", batch " << batch << " / " << batches
-                 << ", loss " << err << '\r' << flush;
 
-            updateWeights();
+            if (batch % 5 == 0) {
+                cout << "Epoch " << epoch << " / " << EPOCHS
+                     << ", batch " << batch << " / " << batches
+                     << ", LR " << lr
+                     << ", loss " << err << '\r' << flush;
+            }
+
+            updateWeights(lr);
+
+            lr /= float(1 + DECAY * epoch);
         }
     }
 }
@@ -110,10 +123,12 @@ void Network::test(const vector<Image> &images) {
             correct += 1;
         }
 
-        cout << "Correct guesses: " << correct << " / " << ++index << '\r' << flush;
+        cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
+
+        index += 1;
     }
-    cout << "Correct guesses: " << correct << " / " << size << endl;
-    cout << endl;
     cout << "Accuracy: " << 100 * float(correct) / float(size) << "%" << endl;
+    cout << endl;
+    cout << "Correct guesses: " << correct << " / " << size << endl;
     cout << endl;
 }
