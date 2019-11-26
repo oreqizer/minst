@@ -16,7 +16,7 @@
 // Hyperparameters
 #define EPOCHS 3            // Iterations over dataset
 #define BATCH 100           // Number of images to adjust weights after
-#define BIAS 0              // Random init bounds interval -WEIGHT_INIT..WEIGHT_INIT
+#define BIAS 0              // Bias value
 #define WEIGHT_INIT 1.0     // Random init bounds interval -WEIGHT_INIT..WEIGHT_INIT
 #define RATE 0.01           // Learning rate
 #define DECAY 0             // Decay of learning rate after update

@@ -24,8 +24,8 @@ void Network::propagate(Image &image) {
 
 void Network::backpropagate(Image &image) {
     work::delta(connectionsOut, neuronsOut, image);
-    work::delta(connectionsOut, connectionsHidden2);
-    work::delta(connectionsHidden2, connectionsHidden1);
+    work::delta(connectionsOut, neuronsHidden2, connectionsHidden2);
+    work::delta(connectionsHidden2, neuronsHidden1, connectionsHidden1);
 
     work::updateGradient(connectionsOut, neuronsHidden2);
     work::updateGradient(connectionsHidden2, neuronsHidden1);
