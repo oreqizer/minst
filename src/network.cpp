@@ -7,34 +7,40 @@
 using namespace std;
 
 Network::Network() :
-        neuronsIn(vector<float>(LAYER_IN)),
-        neuronsHidden1(vector<float>(LAYER_HIDDEN_1)),
-        neuronsHidden2(vector<float>(LAYER_HIDDEN_2)),
+        neuronsIn(vector<float>(LAYER_IN_BIAS)),
+        neuronsHidden1(vector<float>(LAYER_HIDDEN_1_BIAS)),
+//        neuronsHidden2(vector<float>(LAYER_HIDDEN_2_BIAS)),
+//        neuronsHidden2(vector<float>(LAYER_HIDDEN_1_BIAS)),
         neuronsOut(vector<float>(LAYER_OUT)),
         connectionsHidden1(vector<Connection<LAYER_IN_BIAS>>(LAYER_HIDDEN_1)),
-        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_2)),
-        connectionsOut(vector<Connection<LAYER_HIDDEN_2_BIAS>>(LAYER_OUT)) {}
+//        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_2)),
+//        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_1)),
+//        connectionsOut(vector<Connection<LAYER_HIDDEN_2_BIAS>>(LAYER_OUT)) {}
+        connectionsOut(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_OUT)) {}
 
 void Network::propagate(Image &image) {
     work::propagate(neuronsIn, image);
     work::propagate(neuronsIn, connectionsHidden1, neuronsHidden1);
-    work::propagate(neuronsHidden1, connectionsHidden2, neuronsHidden2);
-    work::propagate(neuronsHidden2, connectionsOut, neuronsOut);
+//    work::propagate(neuronsHidden1, connectionsHidden2, neuronsHidden2);
+//    work::propagateOut(neuronsHidden2, connectionsOut, neuronsOut);
+    work::propagateOut(neuronsHidden1, connectionsOut, neuronsOut);
 }
 
 void Network::backpropagate(Image &image) {
     work::delta(connectionsOut, neuronsOut, image);
-    work::delta(connectionsOut, neuronsHidden2, connectionsHidden2);
-    work::delta(connectionsHidden2, neuronsHidden1, connectionsHidden1);
+//    work::delta(connectionsOut, neuronsHidden2, connectionsHidden2);
+//    work::delta(connectionsHidden2, neuronsHidden1, connectionsHidden1);
+    work::delta(connectionsOut, neuronsHidden1, connectionsHidden1);
 
-    work::updateGradient(connectionsOut, neuronsHidden2);
-    work::updateGradient(connectionsHidden2, neuronsHidden1);
+    work::updateGradient(connectionsOut, neuronsHidden1);
+//    work::updateGradient(connectionsOut, neuronsHidden2);
+//    work::updateGradient(connectionsHidden2, neuronsHidden1);
     work::updateGradient(connectionsHidden1, neuronsIn);
 }
 
 void Network::updateWeights(float lr) {
     work::updateWeights(lr, connectionsOut);
-    work::updateWeights(lr, connectionsHidden2);
+//    work::updateWeights(lr, connectionsHidden2);
     work::updateWeights(lr, connectionsHidden1);
 }
 
@@ -57,7 +63,7 @@ int Network::prediction() {
     int res = 0;
     int index = 0;
     float max = -1;
-    for (const auto &n : neuronsOut) {
+    for (auto &n : neuronsOut) {
         if (n > max) {
             max = n;
             res = index;
@@ -69,7 +75,7 @@ int Network::prediction() {
 
 void Network::train(const vector<Image> &images) {
     work::randomize(connectionsHidden1);
-    work::randomize(connectionsHidden2);
+//    work::randomize(connectionsHidden2);
     work::randomize(connectionsOut);
 
     int size = images.size();
@@ -85,8 +91,8 @@ void Network::train(const vector<Image> &images) {
         int batch = 0;
         while (batch < batches) {
             float err = 0;
-            int iteration = BATCH;
-            while (iteration) {
+            int iteration = 0;
+            while (iteration < BATCH) {
                 // Choose a random image
                 Image image = images[dist(mt)];
 
@@ -95,15 +101,15 @@ void Network::train(const vector<Image> &images) {
 
                 err += error(image) / BATCH;
 
-                iteration -= 1;
+                iteration += 1;
             }
 
-            if ((batch + 1) % 5 == 0) {
+//            if ((batch + 1) % 5 == 0) {
                 cout << "Epoch " << epoch + 1 << " / " << EPOCHS
                      << ", batch " << batch + 1 << " / " << batches
                      << ", LR " << lr
                      << ", loss " << err << '\r' << flush;
-            }
+//            }
 
             updateWeights(lr);
 
