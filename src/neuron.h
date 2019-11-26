@@ -16,6 +16,7 @@ public:
 
     float activation;
     float z;
+    float delta;
     vector<Connection> connections;
     Connection *bias; // Nullable
 };

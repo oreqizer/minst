@@ -19,13 +19,14 @@ void Network::propagate(Image &image) {
 }
 
 void Network::backpropagate(Image &image) {
-    auto deltaOut = layerOut.delta(image);
-    auto deltaHidden2 = layerHidden2.delta(deltaOut);
-    auto deltaHidden1 = layerHidden1.delta(deltaHidden2);
+    layerOut.delta(image);
+    layerHidden2.delta(layerOut);
+    layerHidden1.delta(layerHidden2);
 
-    layerOut.updateGradient(deltaOut);
-    layerHidden2.updateGradient(deltaHidden2);
-    layerHidden1.updateGradient(deltaHidden1);
+    // TODO fix these delta functions
+    layerOut.updateGradient();
+    layerHidden2.updateGradient();
+    layerHidden1.updateGradient();
 }
 
 void Network::updateWeights() {
@@ -77,10 +78,12 @@ void Network::train(const vector<Image> &images) {
         uniform_int_distribution<> dist(0, size - 1);
 
         int batches = size / BATCH;
+//        int batches = 2;
         int batch = 0;
         while (batch++ < batches) {
             float err = 0;
             int iteration = BATCH;
+//            int iteration = 5;
             while (iteration--) {
                 // Choose a random image
                 Image image = images[dist(mt)];

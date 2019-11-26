@@ -26,11 +26,11 @@ public:
 
     void propagate();
 
-    vector<float> delta(Image &image);
+    void delta(Image &image);
 
-    vector<float> delta(const vector<float> &previous);
+    void delta(Layer &previous);
 
-    void updateGradient(const vector<float> &delta);
+    void updateGradient();
 
     void updateWeights();
 

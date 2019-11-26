@@ -7,7 +7,7 @@
 
 // Layers
 #define LAYER_IN 28 * 28       // Image pixels
-#define LAYER_HIDDEN 16        // Arbitrary
+#define LAYER_HIDDEN 64        // Arbitrary
 #define LAYER_OUT 10           // 0..9
 
 // Hyperparameters
