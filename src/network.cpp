@@ -76,17 +76,17 @@ void Network::train(const vector<Image> &images) {
 
     int epoch = 0;
     float lr = RATE;
-    while (epoch++ < EPOCHS) {
+    while (epoch < EPOCHS) {
         random_device rd;
         mt19937 mt(rd());
         uniform_int_distribution<> dist(0, size - 1);
 
         int batches = size / BATCH;
         int batch = 0;
-        while (batch++ < batches) {
+        while (batch < batches) {
             float err = 0;
             int iteration = BATCH;
-            while (iteration--) {
+            while (iteration) {
                 // Choose a random image
                 Image image = images[dist(mt)];
 
@@ -94,6 +94,8 @@ void Network::train(const vector<Image> &images) {
                 backpropagate(image);
 
                 err += error(image) / BATCH;
+
+                iteration -= 1;
             }
 
             if (batch % 5 == 0) {
@@ -106,7 +108,10 @@ void Network::train(const vector<Image> &images) {
             updateWeights(lr);
 
             lr /= float(1 + DECAY * epoch);
+
+            batch += 1;
         }
+        epoch += 1;
     }
 }
 
