@@ -44,7 +44,8 @@ vector<Image> files::load(const string &filename, int size) {
         }
 
         images.push_back(img);
-        i++;
+
+        i += 1;
     }
 
     cout << "File loaded!" << endl;
