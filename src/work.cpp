@@ -1,4 +1,5 @@
 #include <random>
+#include <iostream>
 #include "work.h"
 #include "sigmoid.h"
 #include "enums.h"
@@ -21,15 +22,15 @@ void work::randomize(vector<Connection<N>> &conns) {
 
 template void work::randomize(vector<Connection<LAYER_IN_BIAS>> &conns);
 
-template void work::randomize(vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns);
+//template void work::randomize(vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns);
 
-template void work::randomize(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns);
+//template void work::randomize(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns);
 
 void work::propagate(vector<float> &neurons, Image &image) {
     int i = 1;
     int size = neurons.size();
     while (i < size) {
-        neurons[i] = image.pixels[i];
+        neurons[i + 1] = image.pixels[i];
 
         i += 1;
     }
@@ -40,7 +41,7 @@ template<int N>
 void work::propagate(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN) {
     int i = 0;
     for (Connection<N> &c: conns) {
-        c.z = 0; // Reset from previous iterations
+        c.z = 0; // Reset from previous iteration
 
         int j = 0;
         while (j < N) {
@@ -57,11 +58,30 @@ void work::propagate(vector<float> &prevN, vector<Connection<N>> &conns, vector<
 
 template void work::propagate(vector<float> &prevN, vector<Connection<LAYER_IN_BIAS>> &conns, vector<float> &currN);
 
-template void
-work::propagate(vector<float> &prevN, vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns, vector<float> &currN);
+//template void
+//work::propagate(vector<float> &prevN, vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns, vector<float> &currN);
+
+template<int N>
+void work::propagateOut(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN) {
+    int i = 0;
+    for (Connection<N> &c: conns) {
+        c.z = 0; // Reset from previous iteration
+
+        int j = 0;
+        while (j < N) {
+            c.z += prevN[j] * c.weights[j];
+
+            j += 1;
+        }
+        currN[i] = sigmoid::classic(c.z);
+
+        i += 1;
+    }
+}
 
 template void
-work::propagate(vector<float> &prevN, vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &currN);
+//work::propagateOut(vector<float> &prevN, vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &currN);
+work::propagateOut(vector<float> &prevN, vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns, vector<float> &currN);
 
 template<int N>
 void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &image) {
@@ -77,7 +97,8 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
     }
 }
 
-template void work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &neurons, Image &image);
+//template void work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &neurons, Image &image);
+template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns, vector<float> &neurons, Image &image);
 
 template<int P, int C>
 void work::delta(vector<Connection<P>> &prevC, vector<float> &neurons, vector<Connection<C>> &currC) {
@@ -89,12 +110,14 @@ void work::delta(vector<Connection<P>> &prevC, vector<float> &neurons, vector<Co
             c.delta += p.delta * p.weights[index];
         }
         c.delta *= sigmoid::prime(neurons[index]);
+
+        index += 1;
     }
 }
 
-template void
-work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &prevC, vector<float> &neurons,
-            vector<Connection<LAYER_HIDDEN_1_BIAS>> &currC);
+//template void
+//work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &prevC, vector<float> &neurons,
+//            vector<Connection<LAYER_HIDDEN_1_BIAS>> &currC);
 
 template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &prevC, vector<float> &neurons,
                           vector<Connection<LAYER_IN_BIAS>> &currC);
@@ -112,11 +135,11 @@ void work::updateGradient(vector<Connection<N>> &conns, vector<float> &neurons) 
     }
 }
 
-template void work::updateGradient(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &neurons);
+//template void work::updateGradient(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns, vector<float> &neurons);
 
 template void work::updateGradient(vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns, vector<float> &neurons);
 
-template void work::updateGradient(vector<Connection<LAYER_IN_BIAS>> &conns, vector<float> &neurons);
+//template void work::updateGradient(vector<Connection<LAYER_IN_BIAS>> &conns, vector<float> &neurons);
 
 template<int N>
 void work::updateWeights(float lr, vector<Connection<N>> &conns) {
@@ -132,8 +155,8 @@ void work::updateWeights(float lr, vector<Connection<N>> &conns) {
     }
 }
 
-template void work::updateWeights(float lr, vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns);
+//template void work::updateWeights(float lr, vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns);
 
 template void work::updateWeights(float lr, vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns);
 
-template void work::updateWeights(float lr, vector<Connection<LAYER_IN_BIAS>> &conns);
+//template void work::updateWeights(float lr, vector<Connection<LAYER_IN_BIAS>> &conns);
