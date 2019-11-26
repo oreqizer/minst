@@ -17,6 +17,9 @@ namespace work {
     void propagate(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN);
 
     template<int N>
+    void propagateOut(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN);
+
+    template<int N>
     void delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &image);
 
     template<int P, int C>
