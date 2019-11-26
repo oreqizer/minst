@@ -14,7 +14,7 @@ void work::randomize(vector<Connection<N>> &conns) {
         while (i < N) {
             c.weights[i] = dist(mt);
 
-            index += 1;
+            i += 1;
         }
     }
 }
