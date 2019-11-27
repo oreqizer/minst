@@ -9,38 +9,32 @@ using namespace std;
 Network::Network() :
         neuronsIn(vector<float>(LAYER_IN_BIAS)),
         neuronsHidden1(vector<float>(LAYER_HIDDEN_1_BIAS)),
-//        neuronsHidden2(vector<float>(LAYER_HIDDEN_2_BIAS)),
-//        neuronsHidden2(vector<float>(LAYER_HIDDEN_1_BIAS)),
+        neuronsHidden2(vector<float>(LAYER_HIDDEN_2_BIAS)),
         neuronsOut(vector<float>(LAYER_OUT)),
         connectionsHidden1(vector<Connection<LAYER_IN_BIAS>>(LAYER_HIDDEN_1)),
-//        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_2)),
-//        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_1)),
-//        connectionsOut(vector<Connection<LAYER_HIDDEN_2_BIAS>>(LAYER_OUT)) {}
-        connectionsOut(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_OUT)) {}
+        connectionsHidden2(vector<Connection<LAYER_HIDDEN_1_BIAS>>(LAYER_HIDDEN_2)),
+        connectionsOut(vector<Connection<LAYER_HIDDEN_2_BIAS>>(LAYER_OUT)) {}
 
 void Network::propagate(Image &image) {
     work::propagate(neuronsIn, image);
     work::propagate(neuronsIn, connectionsHidden1, neuronsHidden1);
-//    work::propagate(neuronsHidden1, connectionsHidden2, neuronsHidden2);
-//    work::propagateOut(neuronsHidden2, connectionsOut, neuronsOut);
-    work::propagateOut(neuronsHidden1, connectionsOut, neuronsOut);
+    work::propagate(neuronsHidden1, connectionsHidden2, neuronsHidden2);
+    work::propagateOut(neuronsHidden2, connectionsOut, neuronsOut);
 }
 
 void Network::backpropagate(Image &image) {
     work::delta(connectionsOut, neuronsOut, image);
-//    work::delta(connectionsOut, connectionsHidden2);
-//    work::delta(connectionsHidden2, connectionsHidden1);
-    work::delta(connectionsOut, connectionsHidden1);
+    work::delta(connectionsOut, connectionsHidden2);
+    work::delta(connectionsHidden2, connectionsHidden1);
 
     work::updateGradient(connectionsOut, neuronsHidden1);
-//    work::updateGradient(connectionsOut, neuronsHidden2);
-//    work::updateGradient(connectionsHidden2, neuronsHidden1);
-    work::updateGradient(connectionsHidden1, neuronsIn);
+    work::updateGradient(connectionsOut, neuronsHidden2);
+    work::updateGradient(connectionsHidden2, neuronsHidden1);
 }
 
 void Network::updateWeights(float lr) {
     work::updateWeights(lr, connectionsOut);
-//    work::updateWeights(lr, connectionsHidden2);
+    work::updateWeights(lr, connectionsHidden2);
     work::updateWeights(lr, connectionsHidden1);
 }
 
@@ -70,27 +64,12 @@ int Network::prediction() {
         }
         index += 1;
     }
-//    return res;
-    return round(neuronsOut[0]);
-}
-
-void lprint(vector<float> &kekk) {
-    for (auto &k: kekk) {
-        cout << k << " ";
-    }
-    cout << endl;
-}
-
-void lprint(vector<int> &kekk) {
-    for (auto &k: kekk) {
-        cout << k << " ";
-    }
-    cout << endl;
+    return res;
 }
 
 void Network::train(const vector<Image> &images) {
     work::randomize(connectionsHidden1);
-//    work::randomize(connectionsHidden2);
+    work::randomize(connectionsHidden2);
     work::randomize(connectionsOut);
 
     int size = images.size();
@@ -108,27 +87,7 @@ void Network::train(const vector<Image> &images) {
         for (Image &image: inputs) {
             float err = 0;
 
-//            cout << endl << endl << "NEW" << endl;
-//            cout << "Input :: ";
-//            lprint(image.pixels);
-//            cout << "-> " << image.label << endl;
-//            cout << "> Before: " << endl;
-//            lprint(neuronsIn);
-//            cout << "--" << endl;
-//            lprint(neuronsHidden1);
-//            cout << "--" << endl;
-//            lprint(neuronsOut);
-
-
             propagate(image);
-
-//            cout << "> After: " << endl;
-//            lprint(neuronsIn);
-//            cout << "--" << endl;
-//            lprint(neuronsHidden1);
-//            cout << "--" << endl;
-//            lprint(neuronsOut);
-
             backpropagate(image);
 
             err += error(image) / BATCH;
@@ -165,18 +124,7 @@ void Network::test(const vector<Image> &images) {
             correct += 1;
         }
 
-        cout << "Input: ";
-        lprint(image.pixels);
-        cout << "Weights:" << endl;
-        lprint(connectionsHidden1[0].weights);
-        lprint(connectionsHidden1[1].weights);
-        cout << "---" << endl;
-        lprint(connectionsOut[0].weights);
-        cout << "=== " << endl;
-        cout << "Guess: " << guess << ", actual: " << image.label << endl;
-        cout << endl << endl;
-
-//        cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
+        cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
 
         index += 1;
     }
