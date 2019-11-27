@@ -70,7 +70,22 @@ int Network::prediction() {
         }
         index += 1;
     }
-    return res;
+//    return res;
+    return round(neuronsOut[0]);
+}
+
+void lprint(vector<float> &kekk) {
+    for (auto &k: kekk) {
+        cout << k << " ";
+    }
+    cout << endl;
+}
+
+void lprint(vector<int> &kekk) {
+    for (auto &k: kekk) {
+        cout << k << " ";
+    }
+    cout << endl;
 }
 
 void Network::train(const vector<Image> &images) {
@@ -83,39 +98,55 @@ void Network::train(const vector<Image> &images) {
     int epoch = 0;
     float lr = RATE;
     while (epoch < EPOCHS) {
+        vector<Image> inputs = images;
+
         random_device rd;
-        mt19937 mt(rd());
-        uniform_int_distribution<> dist(0, size - 1);
+        mt19937 dist(rd());
+        shuffle(inputs.begin(), inputs.end(), dist);
 
-        int batches = size / BATCH;
-        int batch = 0;
-        while (batch < batches) {
+        int index = 0;
+        for (Image &image: inputs) {
             float err = 0;
-            int iteration = 0;
-            while (iteration < BATCH) {
-                // Choose a random image
-                Image image = images[dist(mt)];
 
-                propagate(image);
-                backpropagate(image);
+//            cout << endl << endl << "NEW" << endl;
+//            cout << "Input :: ";
+//            lprint(image.pixels);
+//            cout << "-> " << image.label << endl;
+//            cout << "> Before: " << endl;
+//            lprint(neuronsIn);
+//            cout << "--" << endl;
+//            lprint(neuronsHidden1);
+//            cout << "--" << endl;
+//            lprint(neuronsOut);
 
-                err += error(image) / BATCH;
 
-                iteration += 1;
-            }
+            propagate(image);
 
-//            if ((batch + 1) % 5 == 0) {
+//            cout << "> After: " << endl;
+//            lprint(neuronsIn);
+//            cout << "--" << endl;
+//            lprint(neuronsHidden1);
+//            cout << "--" << endl;
+//            lprint(neuronsOut);
+
+            backpropagate(image);
+
+            err += error(image) / BATCH;
+
+            if (index % BATCH == 0) {
                 cout << "Epoch " << epoch + 1 << " / " << EPOCHS
-                     << ", batch " << batch + 1 << " / " << batches
+                     << ", batch " << index / BATCH << " / " << size / BATCH
                      << ", LR " << lr
                      << ", loss " << err << '\r' << flush;
-//            }
 
-            updateWeights(lr);
+                updateWeights(lr);
 
-            lr /= float(1 + DECAY * epoch);
+                lr /= float(1 + DECAY * epoch);
 
-            batch += 1;
+                err = 0;
+            }
+
+            index += 1;
         }
         epoch += 1;
     }
@@ -134,7 +165,18 @@ void Network::test(const vector<Image> &images) {
             correct += 1;
         }
 
-        cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
+//        cout << "Input: ";
+//        lprint(image.pixels);
+//        cout << "Weights:" << endl;
+//        lprint(connectionsHidden1[0].weights);
+//        lprint(connectionsHidden1[1].weights);
+//        cout << "---" << endl;
+//        lprint(connectionsOut[0].weights);
+//        cout << "=== " << endl;
+//        cout << "Guess: " << guess << ", actual: " << image.label << endl;
+//        cout << endl << endl;
+
+//        cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
 
         index += 1;
     }
