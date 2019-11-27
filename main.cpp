@@ -29,49 +29,18 @@ int main() {
     Network network;
 
     // Train
-//    vector<Image> trains = files::load(TRAIN_FILE);
-//    vector<Image> trains = files::load(TEST_FILE);
-    vector<int> p1;
-    p1.push_back(0);
-    p1.push_back(1);
-    vector<int> p2;
-    p2.push_back(1);
-    p2.push_back(0);
-    vector<int> p3;
-    p3.push_back(0);
-    p3.push_back(0);
-    vector<int> p4;
-    p4.push_back(1);
-    p4.push_back(1);
-
-    vector<Image> trains;
-    Image img1;
-    img1.label = 1;
-    img1.pixels = p1;
-    trains.push_back(img1);
-    Image img2;
-    img2.label = 1;
-    img2.pixels = p2;
-    trains.push_back(img2);
-    Image img3;
-    img3.label = 0;
-    img3.pixels = p3;
-    trains.push_back(img3);
-    Image img4;
-    img4.label = 0;
-    img4.pixels = p4;
-    trains.push_back(img4);
+    vector<Image> trains = files::load(TRAIN_FILE);
 
     network.train(trains);
 
     // Test
-//    vector<Image> tests = files::load(TEST_FILE);
+    vector<Image> tests = files::load(TEST_FILE);
 
     cout << "Testing training data..." << endl;
     network.test(trains);
 
-//    cout << "Testing actual data..." << endl;
-//    network.test(tests);
+    cout << "Testing actual data..." << endl;
+    network.test(tests);
 
     return 0;
 }
