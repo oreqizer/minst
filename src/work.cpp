@@ -1,5 +1,4 @@
 #include <random>
-#include <iostream>
 #include "work.h"
 #include "sigmoid.h"
 #include "enums.h"
@@ -27,7 +26,7 @@ template void work::randomize(vector<Connection<LAYER_IN_BIAS>> &conns);
 //template void work::randomize(vector<Connection<LAYER_HIDDEN_2_BIAS>> &conns);
 
 void work::propagate(vector<float> &neurons, Image &image) {
-    int i = 1;
+    int i = 0;
     int size = neurons.size();
     while (i < size) {
         neurons[i + 1] = image.pixels[i];
@@ -41,15 +40,14 @@ template<int N>
 void work::propagate(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN) {
     int i = 0;
     for (Connection<N> &c: conns) {
-        c.z = 0; // Reset from previous iteration
-
+        float z = 0;
         int j = 0;
         while (j < N) {
-            c.z += prevN[j] * c.weights[j];
+            z += prevN[j] * c.weights[j];
 
             j += 1;
         }
-        currN[i + 1] = sigmoid::classic(c.z);
+        currN[i + 1] = sigmoid::classic(z);
 
         i += 1;
     }
@@ -65,15 +63,14 @@ template<int N>
 void work::propagateOut(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN) {
     int i = 0;
     for (Connection<N> &c: conns) {
-        c.z = 0; // Reset from previous iteration
-
+        float z = 0;
         int j = 0;
         while (j < N) {
-            c.z += prevN[j] * c.weights[j];
+            z += prevN[j] * c.weights[j];
 
             j += 1;
         }
-        currN[i] = sigmoid::classic(c.z);
+        currN[i] = sigmoid::classic(z);
 
         i += 1;
     }
@@ -85,13 +82,14 @@ work::propagateOut(vector<float> &prevN, vector<Connection<LAYER_HIDDEN_1_BIAS>>
 
 template<int N>
 void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &image) {
-    vector<float> target(conns.size());
-
-    target[image.label] = 1;
+//    vector<float> target(conns.size());
+//
+//    target[image.label] = 1;
 
     int index = 0;
     for (auto &c: conns) {
-        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - target[index]);
+//        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - target[index]);
+        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - image.label);
 
         index += 1;
     }
@@ -146,8 +144,10 @@ void work::updateWeights(float lr, vector<Connection<N>> &conns) {
     for (Connection<N> &c: conns) {
         int index = 0;
         while (index < N) {
-            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
-            c.weights[index] += lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
+//            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
+//            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
+//            c.weights[index] += lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
+            c.weights[index] -= lr * (c.gradients[index] / BATCH);// / (sqrt(c.rmsprops[index]) + EPSILON);
             c.gradients[index] = 0; // Reset accumulator of batch gradient
 
             index += 1;
