@@ -31,12 +31,9 @@ public:
 private:
     vector<float> neuronsIn;
     vector<float> neuronsHidden1;
-//    vector<float> neuronsHidden2;
     vector<float> neuronsOut;
 
     vector<Connection<LAYER_IN_BIAS>> connectionsHidden1;
-//    vector<Connection<LAYER_HIDDEN_1_BIAS>> connectionsHidden2;
-//    vector<Connection<LAYER_HIDDEN_2_BIAS>> connectionsOut;
     vector<Connection<LAYER_HIDDEN_1_BIAS>> connectionsOut;
 };
 
