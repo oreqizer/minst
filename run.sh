@@ -16,3 +16,18 @@ echo -e "Finished compiling.\n"
 # train the model
 echo "Current time is $(date)"
 ./magnificence
+
+# check predictions
+echo -e "Train predictions:"
+java -jar evaluator.jar trainPredictions data/mnist_train_labels.csv 10
+cat Results
+
+echo -e "\n\nActual test predictions:"
+java -jar evaluator.jar actualTestPredictions data/mnist_test_labels.csv 10
+cat Results
+
+# print total time
+echo "Start time: $START_TIME"
+echo "Current time: $(date)"
+duration=$SECONDS
+echo "$((duration / 60)) minutes and $((duration % 60)) seconds elapsed."

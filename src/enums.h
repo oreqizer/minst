@@ -14,7 +14,7 @@
 #define LAYER_OUT 10                           // 0..9
 
 // Hyperparameters
-#define EPOCHS 10           // Iterations over dataset
+#define EPOCHS 15           // Iterations over dataset
 #define BATCH 100           // Number of images to adjust weights after
 #define BIAS 1              // Bias value
 #define WEIGHT_INIT 0.1     // Random init bounds interval -WEIGHT_INIT..WEIGHT_INIT

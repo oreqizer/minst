@@ -5,8 +5,8 @@
 
 using namespace std;
 
-#define TRAIN_FILE "data/mnist_train.csv", 60000
-#define TEST_FILE "data/mnist_test.csv", 10000
+#define TRAIN_FILE "data/mnist_train_labels.csv", "data/mnist_train_vectors.csv", 60000
+#define TEST_FILE "data/mnist_test_labels.csv", "data/mnist_test_vectors.csv", 10000
 
 #define TRAIN_OUT "trainPredictions"
 #define TEST_OUT "actualTestPredictions"

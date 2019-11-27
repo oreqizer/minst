@@ -6,39 +6,42 @@
 
 using namespace std;
 
-/**
- * Images are formatted:
- * label,...pixels
- */
-Image readRow(const string &line) {
-    Image img;
-
-    stringstream ss(line);
+int readLabelsRow(istream &ss) {
     string cell;
+    getline(ss, cell);
 
     // Label
-    getline(ss, cell, ',');
-    img.label = stoi(cell);
+    return stoi(cell);
+}
+
+vector<int> readVectorsRow(istream &ss) {
+    string line;
+    getline(ss, line);
+
+    stringstream cells(line);
+    string cell;
 
     // Pixels
     vector<int> pixels;
-    while (getline(ss, cell, ',')) {
-        img.pixels.push_back(stoi(cell));
+    while (getline(cells, cell, ',')) {
+        pixels.push_back(stoi(cell));
     }
-    return img;
+    return pixels;
 }
 
-vector<Image> files::load(const string &filename, int size) {
-    ifstream file(filename);
+vector<Image> files::load(const string &labelFile, const string &vectorFile, int size) {
+    ifstream labels(labelFile);
+    ifstream vectors(vectorFile);
     vector<Image> images;
 
     images.reserve(size);
-    cout << "Loading file '" << filename << "'" << endl;
 
-    string str;
     int i = 0;
-    while (getline(file, str)) {
-        Image img = readRow(str);
+    while (i < size) {
+        Image img;
+        img.label = readLabelsRow(labels);
+        img.pixels = readVectorsRow(vectors);
+
         if (i % 250 == 0) {
             cout << "Loaded " << i << " images" << '\r' << flush;
         }
@@ -47,6 +50,9 @@ vector<Image> files::load(const string &filename, int size) {
 
         i += 1;
     }
+
+    labels.close();
+    vectors.close();
 
     cout << "File loaded!" << endl;
     cout << endl;

@@ -8,7 +8,7 @@
 using namespace std;
 
 namespace files {
-    vector<Image> load(const string &filename, int size);
+    vector<Image> load(const string &labelFile, const string &vectorFile, int size);
 }
 
 #endif //TEXTURES_FILES_H
