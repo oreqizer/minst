@@ -15,11 +15,11 @@
 #define LAYER_OUT 1                           // 0..9
 
 // Hyperparameters
-#define EPOCHS 5000            // Iterations over dataset
+#define EPOCHS 10000            // Iterations over dataset
 #define BATCH 1           // Number of images to adjust weights after
 #define BIAS 0              // Bias value
-#define WEIGHT_INIT 0.1     // Random init bounds interval -WEIGHT_INIT..WEIGHT_INIT
-#define RATE 0.8           // Learning rate
+#define WEIGHT_INIT 0.5     // Random init bounds interval -WEIGHT_INIT..WEIGHT_INIT
+#define RATE 0.1           // Learning rate
 #define DECAY 0             // Decay of learning rate after update
 #define MOMENTUM 0        // How much does previous cache affect the next one
 
