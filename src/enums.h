@@ -19,7 +19,7 @@
 #define BIAS 0              // Bias value
 #define WEIGHT_INIT 0.1     // Random init bounds interval -WEIGHT_INIT..WEIGHT_INIT
 #define RATE 0.1            // Learning rate
-#define DECAY 0.001         // Decay of learning rate after update
+#define DECAY 0.0001        // Decay of learning rate after update
 #define MOMENTUM 0.9        // How much does previous cache affect the next one
 
 #endif //MNIST_ENUMS_H
