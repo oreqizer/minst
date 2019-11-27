@@ -17,7 +17,7 @@ int main() {
     cout << "  " << "Mini-batch RMSProp of a 3-layer NN..." << endl;
     cout << "  " << "(" << LAYER_IN << " neurons) x ("
          << LAYER_HIDDEN_1 << " neurons) x ("
-//         << LAYER_HIDDEN_2 << " neurons) x ("
+         << LAYER_HIDDEN_2 << " neurons) x ("
          << LAYER_OUT << " neurons)" << endl;
     cout << "  " << "Learning rate: " << RATE << endl;
     cout << "  " << "Decay: " << DECAY << endl;
