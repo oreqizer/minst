@@ -141,9 +141,8 @@ void work::updateWeights(float lr, vector<Connection<N>> &conns) {
     for (Connection<N> &c: conns) {
         int index = 0;
         while (index < N) {
-//            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
-//            c.weights[index] -= lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
-            c.weights[index] -= lr * (c.gradients[index] / BATCH); /// (sqrt(c.rmsprops[index]) + EPSILON);
+            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
+            c.weights[index] -= lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
             c.gradients[index] = 0; // Reset accumulator of batch gradient
 
             index += 1;
