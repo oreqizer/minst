@@ -89,7 +89,7 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
     int index = 0;
     for (auto &c: conns) {
 //        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - target[index]);
-        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - image.label);
+        c.delta = sigmoid::prime(neurons[index]) * (image.label - neurons[index]);
 
         index += 1;
     }
@@ -147,7 +147,7 @@ void work::updateWeights(float lr, vector<Connection<N>> &conns) {
 //            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
 //            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
 //            c.weights[index] += lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
-            c.weights[index] -= lr * (c.gradients[index] / BATCH);// / (sqrt(c.rmsprops[index]) + EPSILON);
+            c.weights[index] += lr * (c.gradients[index] / BATCH);// / (sqrt(c.rmsprops[index]) + EPSILON);
             c.gradients[index] = 0; // Reset accumulator of batch gradient
 
             index += 1;
