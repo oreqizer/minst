@@ -28,9 +28,9 @@ void Network::propagate(Image &image) {
 
 void Network::backpropagate(Image &image) {
     work::delta(connectionsOut, neuronsOut, image);
-//    work::delta(connectionsOut, neuronsHidden2, connectionsHidden2);
-//    work::delta(connectionsHidden2, neuronsHidden1, connectionsHidden1);
-    work::delta(connectionsOut, neuronsHidden1, connectionsHidden1);
+//    work::delta(connectionsOut, connectionsHidden2);
+//    work::delta(connectionsHidden2, connectionsHidden1);
+    work::delta(connectionsOut, connectionsHidden1);
 
     work::updateGradient(connectionsOut, neuronsHidden1);
 //    work::updateGradient(connectionsOut, neuronsHidden2);
@@ -165,16 +165,16 @@ void Network::test(const vector<Image> &images) {
             correct += 1;
         }
 
-//        cout << "Input: ";
-//        lprint(image.pixels);
-//        cout << "Weights:" << endl;
-//        lprint(connectionsHidden1[0].weights);
-//        lprint(connectionsHidden1[1].weights);
-//        cout << "---" << endl;
-//        lprint(connectionsOut[0].weights);
-//        cout << "=== " << endl;
-//        cout << "Guess: " << guess << ", actual: " << image.label << endl;
-//        cout << endl << endl;
+        cout << "Input: ";
+        lprint(image.pixels);
+        cout << "Weights:" << endl;
+        lprint(connectionsHidden1[0].weights);
+        lprint(connectionsHidden1[1].weights);
+        cout << "---" << endl;
+        lprint(connectionsOut[0].weights);
+        cout << "=== " << endl;
+        cout << "Guess: " << guess << ", actual: " << image.label << endl;
+        cout << endl << endl;
 
 //        cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
 
