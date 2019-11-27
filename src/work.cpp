@@ -40,14 +40,15 @@ template<int N>
 void work::propagate(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN) {
     int i = 0;
     for (Connection<N> &c: conns) {
-        float z = 0;
+        c.z = 0; // Reset from previous iterations
+
         int j = 0;
         while (j < N) {
-            z += prevN[j] * c.weights[j];
+            c.z += prevN[j] * c.weights[j];
 
             j += 1;
         }
-        currN[i + 1] = sigmoid::classic(z);
+        currN[i + 1] = sigmoid::classic(c.z);
 
         i += 1;
     }
@@ -63,14 +64,15 @@ template<int N>
 void work::propagateOut(vector<float> &prevN, vector<Connection<N>> &conns, vector<float> &currN) {
     int i = 0;
     for (Connection<N> &c: conns) {
-        float z = 0;
+        c.z = 0; // Reset from previous iterations
+
         int j = 0;
         while (j < N) {
-            z += prevN[j] * c.weights[j];
+            c.z += prevN[j] * c.weights[j];
 
             j += 1;
         }
-        currN[i] = sigmoid::classic(z);
+        currN[i] = sigmoid::classic(c.z);
 
         i += 1;
     }
@@ -88,8 +90,8 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
 
     int index = 0;
     for (auto &c: conns) {
-//        c.delta = sigmoid::prime(neurons[index]) * (neurons[index] - target[index]);
-        c.delta = sigmoid::prime(neurons[index]) * (image.label - neurons[index]);
+//        c.delta = sigmoid::prime(c.z) * (neurons[index] - target[index]);
+        c.delta = sigmoid::prime(c.z) * (neurons[index] - image.label);
 
         index += 1;
     }
@@ -99,7 +101,7 @@ void work::delta(vector<Connection<N>> &conns, vector<float> &neurons, Image &im
 template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &conns, vector<float> &neurons, Image &image);
 
 template<int P, int C>
-void work::delta(vector<Connection<P>> &prevC, vector<float> &neurons, vector<Connection<C>> &currC) {
+void work::delta(vector<Connection<P>> &prevC, vector<Connection<C>> &currC) {
     int index = 0;
     for (Connection<C> &c: currC) {
         c.delta = 0;
@@ -107,18 +109,16 @@ void work::delta(vector<Connection<P>> &prevC, vector<float> &neurons, vector<Co
         for (Connection<P> &p: prevC) {
             c.delta += p.delta * p.weights[index];
         }
-        c.delta *= sigmoid::prime(neurons[index]);
+        c.delta *= sigmoid::prime(c.z);
 
         index += 1;
     }
 }
 
 //template void
-//work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &prevC, vector<float> &neurons,
-//            vector<Connection<LAYER_HIDDEN_1_BIAS>> &currC);
+//work::delta(vector<Connection<LAYER_HIDDEN_2_BIAS>> &prevC, vector<Connection<LAYER_HIDDEN_1_BIAS>> &currC);
 
-template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &prevC, vector<float> &neurons,
-                          vector<Connection<LAYER_IN_BIAS>> &currC);
+template void work::delta(vector<Connection<LAYER_HIDDEN_1_BIAS>> &prevC, vector<Connection<LAYER_IN_BIAS>> &currC);
 
 template<int N>
 void work::updateGradient(vector<Connection<N>> &conns, vector<float> &neurons) {
@@ -145,9 +145,8 @@ void work::updateWeights(float lr, vector<Connection<N>> &conns) {
         int index = 0;
         while (index < N) {
 //            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
-//            c.rmsprops[index] = MOMENTUM * c.rmsprops[index] + (1 - MOMENTUM) * pow(c.gradients[index], 2);
-//            c.weights[index] += lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
-            c.weights[index] += lr * (c.gradients[index] / BATCH);// / (sqrt(c.rmsprops[index]) + EPSILON);
+//            c.weights[index] -= lr * (c.gradients[index] / BATCH) / (sqrt(c.rmsprops[index]) + EPSILON);
+            c.weights[index] -= lr * (c.gradients[index] / BATCH); /// (sqrt(c.rmsprops[index]) + EPSILON);
             c.gradients[index] = 0; // Reset accumulator of batch gradient
 
             index += 1;
