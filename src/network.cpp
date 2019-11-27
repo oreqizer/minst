@@ -1,5 +1,6 @@
 #include <random>
 #include <iostream>
+#include <fstream>
 #include "network.h"
 #include "work.h"
 #include "enums.h"
@@ -111,7 +112,9 @@ void Network::train(const vector<Image> &images) {
     }
 }
 
-void Network::test(const vector<Image> &images) {
+void Network::test(const vector<Image> &images, const string &out) {
+    ofstream file(out);
+
     int size = images.size();
 
     int index = 0;
@@ -125,6 +128,7 @@ void Network::test(const vector<Image> &images) {
         }
 
         cout << "Accuracy: " << 100 * float(correct) / float(index) << "%" << '\r' << flush;
+        file << guess << endl;
 
         index += 1;
     }
@@ -132,4 +136,6 @@ void Network::test(const vector<Image> &images) {
     cout << endl;
     cout << "Correct guesses: " << correct << " / " << size << endl;
     cout << endl;
+
+    file.close();
 }

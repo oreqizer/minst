@@ -26,7 +26,7 @@ public:
 
     void train(const vector<Image> &images);
 
-    void test(const vector<Image> &images);
+    void test(const vector<Image> &images, const string &out);
 
 private:
     vector<float> neuronsIn;

@@ -8,6 +8,9 @@ using namespace std;
 #define TRAIN_FILE "data/mnist_train.csv", 60000
 #define TEST_FILE "data/mnist_test.csv", 10000
 
+#define TRAIN_OUT "trainPredictions"
+#define TEST_OUT "actualTestPredictions"
+
 int main() {
     cout << "Good morning ladies and gentlemen — buckle your seat belts," << endl;
     cout << "hold tight and get ready for this preworkout-fueled ride of the" << endl;
@@ -37,10 +40,10 @@ int main() {
     vector<Image> tests = files::load(TEST_FILE);
 
     cout << "Testing training data..." << endl;
-    network.test(trains);
+    network.test(trains, TRAIN_OUT);
 
     cout << "Testing actual data..." << endl;
-    network.test(tests);
+    network.test(tests, TEST_OUT);
 
     return 0;
 }
