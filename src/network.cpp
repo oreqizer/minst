@@ -27,9 +27,9 @@ void Network::backpropagate(Image &image) {
     work::delta(connectionsOut, connectionsHidden2);
     work::delta(connectionsHidden2, connectionsHidden1);
 
-    work::updateGradient(connectionsOut, neuronsHidden1);
     work::updateGradient(connectionsOut, neuronsHidden2);
     work::updateGradient(connectionsHidden2, neuronsHidden1);
+    work::updateGradient(connectionsHidden1, neuronsIn);
 }
 
 void Network::updateWeights(float lr) {
