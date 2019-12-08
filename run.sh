@@ -10,7 +10,7 @@ rm magnificence
 
 # compile
 echo "Compiling magnificence..."
-g++ main.cpp src/*.cpp -O3 -std=c++17 -o magnificence
+g++ main.cpp src/*.cpp -O3 -std=c++11 -o magnificence
 echo -e "Finished compiling.\n"
 
 # train the model

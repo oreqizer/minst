@@ -1,6 +1,7 @@
 #include <random>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include "network.h"
 #include "work.h"
 #include "enums.h"
@@ -80,9 +81,7 @@ void Network::train(const vector<Image> &images) {
     while (epoch < EPOCHS) {
         vector<Image> inputs = images;
 
-        random_device rd;
-        mt19937 dist(rd());
-        shuffle(inputs.begin(), inputs.end(), dist);
+        random_shuffle(inputs.begin(), inputs.end());
 
         int index = 0;
         for (Image &image: inputs) {
